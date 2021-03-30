@@ -1,0 +1,56 @@
+Public Function IsInArray(stringToBeFound As String, arr As Variant) As Boolean
+
+    Dim i
+    For i = UBound(arr) To LBound(arr) Step -1
+        If arr(i) = stringToBeFound Then
+            IsInArray = True
+            Exit Function
+        End If
+    Next i
+    IsInArray = False
+
+End Function
+
+
+Sub run()
+
+Dim arr() As String
+Dim i As Long
+
+ReDim arr(0)
+
+While Not IsEmpty(Cells(1 + i, 8).Value)
+
+If Not IsInArray(Cells(1 + i, 8).Value, arr) Then
+
+Dim size As Long
+size = UBound(arr) - LBound(arr) + 1
+
+
+
+arr(size - 1) = Cells(1 + i, 8)
+
+ReDim Preserve arr(size)
+
+End If
+
+i = i + 1
+
+Wend
+
+
+
+For i = 1 To UBound(arr) - 1
+
+    ActiveSheet.Copy After:=Sheets(Sheets.Count)
+    Sheets(Sheets.Count).Select
+    ActiveSheet.Range("A1").AutoFilter Field:=1, Criteria1:=arr(i)
+    
+    
+    ActiveSheet.AutoFilter.Range.Offset(1).SpecialCells(xlCellTypeVisible).Cells(1, 1).Select
+    Selection.Copy
+    ActiveSheet.Name = ActiveCell.Value
+
+Next i
+
+End Sub
